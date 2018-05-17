@@ -34,3 +34,9 @@ docker run -d healthcheck:bc2b19b --delay=120 --listen=0.0.0.0:8899
 unhealth_elapsed: unhealth state elapsed time.
 ```
 
+使用方法：
+
+1. 首先下载源码，然后运行命令make来编译镜像.
+2. 用编译的镜像在marathon发布应用，可以设置环境变量DELAY_SECONDS来控制应用在多少秒之后变得不健康. 默认是60秒. 可以通过环境变量LISTEN来设置服务监听的端口,默认是8899. 健康检测的接口是/health, 返回200表示成功，返回500表示失败.
+3. Prometheus可以通过访问/metrics接口来获取监控数据，其中键unhealth_elapsed 对应的值表示服务从不健康开始到当前时间所持续的秒数. 当服务健康时该值为0，服务不健康时该值开始累加. 
+
