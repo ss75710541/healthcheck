@@ -1,9 +1,11 @@
 package main
 
 import (
-	"flag"
+	//"flag"
 	"fmt"
 	"net/http"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -11,8 +13,8 @@ import (
 )
 
 var (
-	delay           float64
-	listen          string
+	delay           float64 //delay seconds before health turned abnormal.
+	listen          string  // listen address
 	count           float64
 	unhealthElapsed = prometheus.NewCounter(
 		prometheus.CounterOpts{
@@ -27,14 +29,23 @@ func init() {
 }
 
 func main() {
-	// delay seconds before health turned abnormal.
-	flag.Float64Var(&delay, "delay", 60, "wait seconds before health turned abnormal")
+	// find vars from env
+	delay, err := strconv.ParseFloat(os.Getenv("DELAY_SECONDS"), 64)
+	if err != nil {
+		delay = 60
+	}
 
-	// listen address
-	flag.StringVar(&listen, "listen", "127.0.0.1:8899", "listening address")
+	listen = os.Getenv("LISTEN")
+	if listen == "" {
+		listen = "0.0.0.0:8899"
+	}
 
-	// parse flags
-	flag.Parse()
+	//flag.Float64Var(&delay, "delay", 60, "wait seconds before health turned abnormal")
+
+	//flag.StringVar(&listen, "listen", "0.0.0.0:8899", "listening address")
+
+	//// parse flags
+	//flag.Parse()
 
 	handler := http.NewServeMux()
 	handler.Handle("/health", health())
