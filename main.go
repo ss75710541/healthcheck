@@ -30,7 +30,10 @@ func init() {
 
 func main() {
 	// find vars from env
-	delay, err := strconv.ParseFloat(os.Getenv("DELAY_SECONDS"), 64)
+	_delay, err := strconv.ParseFloat(os.Getenv("DELAY_SECONDS"), 64)
+
+	delay = _delay
+
 	if err != nil {
 		delay = 60
 	}
@@ -94,6 +97,9 @@ func counter(quit <-chan struct{}) {
 			count++
 			if count > delay {
 				unhealthElapsed.Inc()
+				fmt.Printf("count:%v > delay:%v, health is error.\n", count, delay)
+			} else {
+				fmt.Println("count:", count)
 			}
 		case <-quit:
 			return

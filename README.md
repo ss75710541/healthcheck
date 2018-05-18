@@ -7,13 +7,14 @@ make
 
 ### Usage 
 ```
-docker run -d healthcheck:bc2b19b --delay=120 --listen=0.0.0.0:8899
+docker run -p 8899:8899 -e DELAY_SECONDS=60 -e listen=0.0.0.0:8899  -d healthcheck:latest
 ```
 
 ```
--delay float
+envs:
+  delay float
     wait seconds before health turned abnormal (default 60)
--listen string
+  listen string
     listening address (default "127.0.0.1:8899")
 ```
 
